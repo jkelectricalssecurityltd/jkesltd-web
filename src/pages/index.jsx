@@ -340,9 +340,15 @@ import patImg from "../assets/images/PATTESTING.jpg";
 
 
       {/* FLOAT BUTTONS */}
-      <Link to="/contact" className="whatsapp-chat">
-        <i className="fa-brands fa-whatsapp"></i>
-      </Link>
+      <a
+  href="https://wa.me/447733927558"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="whatsapp-chat"
+>
+  <i className="fa-brands fa-whatsapp"></i>
+</a>
+
 
       <a
         href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk"
