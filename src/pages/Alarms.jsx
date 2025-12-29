@@ -55,20 +55,19 @@ const Alarms = () => {
             <li><Link to="/about">About Us</Link></li>
 
             <li className="dropdown">
-              <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>CCTV</a>
-              <ul className="submenu">
-                <li><Link to="/cctv">IP</Link></li>
-                <li><Link to="/cctv">Analog</Link></li>
-                <li><Link to="/cctv">Wireless</Link></li>
-              </ul>
-            </li>
-
+            <Link to="/cctv" className="dropdown-btn">CCTV</Link>
+             <ul className="submenu">
+             <li><Link to="/cctv">IP (Internet Protocol)</Link></li>
+             <li><Link to="/cctv">Analogue</Link></li>
+             <li><Link to="/cctv">Wireless</Link></li>
+             </ul>
+             </li>
             <li className="dropdown">
-              <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>Alarms</a>
-              <ul className="submenu">
-                <li><Link to="/alarms">Conventional System</Link></li>
-                <li><Link to="/alarms">Addressable System</Link></li>
-              </ul>
+            <Link to="/alarms" className="dropdown-btn">Alarms</Link> 
+             <ul className="submenu">
+             <li><Link to="/alarms">Conventional</Link></li>
+             <li><Link to="/alarms">Addressable</Link></li>
+             </ul>
             </li>
 
             <li><Link to="/pattesting">PAT Testing</Link></li>
@@ -186,23 +185,8 @@ const Alarms = () => {
 
 
       {/* FLOAT BUTTONS */}
-      <a
-  href="https://wa.me/447733927558"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="whatsapp-chat"
->
-  <i className="fa-brands fa-whatsapp"></i>
-</a>
-
-      <a
-        href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk"
-        className="email-float"
-        target="_blank"
-        rel="noreferrer"
-      >
-        <i className="fa-solid fa-envelope"></i>
-      </a>
+      <a href="https://wa.me/447733927558" target="_blank" rel="noopener noreferrer" className="whatsapp-chat"><i className="fa-brands fa-whatsapp"></i></a>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk" className="email-float" target="_blank" rel="noreferrer"><i className="fa-solid fa-envelope"></i></a>
     </>
   );
 };

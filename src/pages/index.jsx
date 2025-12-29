@@ -1,5 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import "../styles/style.css";
 
 import logo from "../assets/images/JKLOGO.svg";
@@ -7,11 +8,9 @@ import heroBg from "../assets/images/jkimage2.jpg";
 import cctvInstall from "../assets/images/CCTVINSTALLATION.jpg";
 import fireAlarm from "../assets/images/FIREALARM.jpg";
 import patTesting from "../assets/images/PATTESTINGCHECK.jpg";
-import cctvImg from "../assets/images/CCTV.jpg";
-import fireImg from "../assets/images/FIREALARM.jpg";
-import patImg from "../assets/images/PATTESTING.jpg";
 
-  const Home = () => {
+const Home = () => {
+  const formRef = useRef();
 
   const handleDropdownClick = (e) => {
     if (window.innerWidth <= 900) {
@@ -22,12 +21,8 @@ import patImg from "../assets/images/PATTESTING.jpg";
       }
     }
   };
+
   useEffect(() => {
-    
-
-
-
-    // SCROLL ANIMATION
     const animatedItems = document.querySelectorAll(".fade-up");
     const revealOnScroll = () => {
       const windowHeight = window.innerHeight;
@@ -39,107 +34,92 @@ import patImg from "../assets/images/PATTESTING.jpg";
     };
     window.addEventListener("scroll", revealOnScroll);
     revealOnScroll();
-
-
-    // CONTACT FORM
-    const contactForm = document.getElementById("contactForm");
-    if (contactForm) {
-      contactForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const btn = this.querySelector("button");
-        const success = this.querySelector(".success-msg");
-
-        btn.classList.add("sending");
-        btn.innerText = "Preparing…";
-
-        const gmailURL =
-          `https://mail.google.com/mail/?view=cm&fs=1` +
-          `&to=contact@jkelectricalssecurityltd.co.uk` +
-          `&su=Service Enquiry` +
-          `&body=` +
-          encodeURIComponent(
-            `Name: ${name.value}\nEmail: ${email.value}\nAddress: ${Address.value}\nPhone: ${phone.value}\n\nMessage:\n${message.value}`
-          );
-
-        window.open(gmailURL, "_blank", "noopener,noreferrer");
-
-        setTimeout(() => {
-          btn.classList.remove("sending");
-          btn.innerText = "Sent ✓";
-          success.style.display = "block";
-          contactForm.reset();
-
-          setTimeout(() => {
-            success.style.display = "none";
-            btn.innerText = "Submit";
-          }, 3000);
-        }, 600);
-      });
-    }
-
     return () => window.removeEventListener("scroll", revealOnScroll);
   }, []);
 
+  const sendEmail = (e) => {
+    e.preventDefault();
+    const btn = e.target.querySelector("button");
+    const successMsg = e.target.querySelector(".success-msg");
 
-  
+    btn.innerText = "Sending...";
+    btn.disabled = true;
+
+    // These IDs must match your EmailJS Dashboard exactly
+    emailjs.sendForm(
+      "service_ss73srr",     
+      "template_q103b69",    
+      formRef.current, 
+      "vZi4ov88G9NAu8J0-"    
+    )
+    .then(() => {
+        btn.innerText = "Sent ✓";
+        if(successMsg) successMsg.style.display = "block";
+        formRef.current.reset();
+        
+        setTimeout(() => {
+          btn.innerText = "Submit";
+          btn.disabled = false;
+          if(successMsg) successMsg.style.display = "none";
+        }, 4000);
+    }, (error) => {
+        console.error("FAILED...", error.text);
+        btn.innerText = "Error! Try Again";
+        btn.disabled = false;
+    });
+  };
+
+  const handleEmailClick = (e) => {
+  // This forces the browser to treat it as a direct command
+  window.location.href = "mailto:contact@jkelectricalssecurityltd.co.uk?subject=Service Inquiry";
+};
+
 
   return (
     <>
-      {/* HEADER */}
+      {/*Header */}
       <header>
-        <div className="logo">
-          <img src={logo} alt="Logo" />
-        </div>
-
+        <div className="logo"><img src={logo} alt="Logo" /></div>
         <input type="checkbox" id="menu-toggle" />
         <label htmlFor="menu-toggle" className="hamburger">&#9776;</label>
-
         <nav>
           <ul className="nav-links">
             <li><Link to="/">Home</Link></li>
             <li><Link to="/about">About Us</Link></li>
-
             <li className="dropdown">
-              <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>CCTV</a>
-              <ul className="submenu">
-                <li><Link to="/cctv">IP(Internet Protocol)</Link></li>
-                <li><Link to="/cctv">Analogue</Link></li>
-                <li><Link to="/cctv">Wireless</Link></li>
-              </ul>
-            </li>
-
+            <Link to="/cctv" className="dropdown-btn">CCTV</Link>
+             <ul className="submenu">
+             <li><Link to="/cctv">IP (Internet Protocol)</Link></li>
+             <li><Link to="/cctv">Analogue</Link></li>
+             <li><Link to="/cctv">Wireless</Link></li>
+             </ul>
+             </li>
             <li className="dropdown">
-              <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>Alarms</a>
-              <ul className="submenu">
-                <li><Link to="/alarms">Conventional</Link></li>
-                <li><Link to="/alarms">Addressable</Link></li>
-              </ul>
+            <Link to="/cctv" className="dropdown-btn">Alarms</Link> 
+             <ul className="submenu">
+             <li><Link to="/cctv">Conventional</Link></li>
+             <li><Link to="/cctv">Addressable</Link></li>
+             </ul>
             </li>
-
             <li><Link to="/pattesting">PAT Testing</Link></li>
             <li><Link to="/contact">Contact Us</Link></li>
           </ul>
         </nav>
       </header>
+          
 
-      {/* HERO */}
+      {/* Hero sectin */}
       <div className="hero-section" style={{ backgroundImage: `url(${heroBg})` }}>
         <div className="overlay"></div>
         <div className="content">
-          <div className="small-title">
-            <span className="line"></span>
-            <span>J&K Electricals Security LTD</span>
-            <span className="line"></span>
-          </div>
-
-          <h1 className="main-title">
-            CCTV & FIRE ALARMS <br /> INSTALLATION <br /> PAT TESTING
-          </h1>
-
+          <div className="small-title"><span className="line"></span><span>J&K Electricals Security LTD</span><span className="line"></span></div>
+          <h1 className="main-title">CCTV & FIRE ALARMS <br /> INSTALLATION <br /> PAT TESTING</h1>
           <p className="sub-text">LOCATION: CROYDON</p>
         </div>
       </div>
+
+
+
 
       {/* HEX SECTIONS */}
       <section className="single-hex-section fade-up">
@@ -180,9 +160,14 @@ import patImg from "../assets/images/PATTESTING.jpg";
       is provided for audit purposes. Choose us for professional, cost-effective PAT testing and a safer working environment.</p>
         </div>
       </section>
-      
 
-{/* CUSTOMER REVIEWS SECTION */}
+
+
+
+
+
+     {/* Review Section */}
+     {/* CUSTOMER REVIEWS SECTION */}
 <section className="reviews-section">
   <h2 className="reviews-title">What Our Customers Say</h2>
 
@@ -239,52 +224,35 @@ import patImg from "../assets/images/PATTESTING.jpg";
 
 
 
-{/* CONTACT SECTION */}
-<section className="contact-section fade-up">
-  <div className="contact-container">
+      {/* CONTACT SECTION - Updated name attributes to match your screenshot */}
+      <section className="contact-section fade-up">
+        <div className="contact-container">
+          <div className="contact-info fade-up">
+            <h2>Contact Us</h2>
+            <div className="info-box"><i className="fa-solid fa-phone"></i><span>+44 7733927558</span></div>
+            <div className="info-box"><i className="fa-solid fa-envelope"></i><span>contact@jkelectricalssecurityltd.co.uk</span></div>
+            <div className="info-box"><i className="fa-solid fa-location-dot"></i><span>Croydon</span></div>
+          </div>
 
-    {/* LEFT INFO */}
-    <div className="contact-info fade-up">
-      <h2>Contact Us</h2>
-      <p>
-        Have a question or need support? We are here to help. Reach out to us anytime.
-      </p>
-
-      <div className="info-box">
-        <i className="fa-solid fa-phone"></i>
-        <span>+44 7733927558, +44 7359920729</span>
-      </div>
-
-      <div className="info-box">
-        <i className="fa-solid fa-envelope"></i>
-        <span>contact@jkelectricalssecurityltd.co.uk</span>
-      </div>
-
-      <div className="info-box">
-        <i className="fa-solid fa-location-dot"></i>
-        <span>Croydon</span>
-      </div>
-    </div>
-
-    {/* CONTACT FORM */}
-    <form className="contact-form fade-up">
-      <h3>Send Us a Message</h3>
-
-      <input type="text" placeholder="Full Name" required />
-      <input type="email" placeholder="Email Address" required />
-      <input type="text" placeholder="Address" required />
-      <input type="text" placeholder="Phone Number" required />
-      <textarea rows="5" placeholder="Your Message..." required></textarea>
-
-      <button type="submit">Submit</button>
-    </form>
-
-  </div>
-</section>
+          <form ref={formRef} onSubmit={sendEmail} className="contact-form fade-up">
+            <h3>Send Us a Message</h3>
+            {/* Input names updated to match your template tags exactly */}
+            <input type="text" name="name" placeholder="Full Name" required />
+            <input type="email" name="email" placeholder="Email Address" required />
+            <input type="text" name="phone" placeholder="Phone Number" required />
+            <input type="text" name="address" placeholder="Address" required />
+            <textarea name="message" rows="5" placeholder="Your Message..." required></textarea>
+            
+            <button type="submit">Submit</button>
+            <p className="success-msg" style={{display: 'none', color: '#0E7B99', marginTop: '10px', fontWeight: 'bold'}}>
+               ✓ Thank you! We have received your inquiry.
+            </p>
+          </form>
+        </div>
+      </section>
 
 
-
-     {/* Footer */}
+      {/* Footer */}
 <footer className="jk-footer">
   <div className="jk-footer-container">
 
@@ -339,24 +307,11 @@ import patImg from "../assets/images/PATTESTING.jpg";
 
 
 
-      {/* FLOAT BUTTONS */}
-      <a
-  href="https://wa.me/447733927558"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="whatsapp-chat"
->
-  <i className="fa-brands fa-whatsapp"></i>
-</a>
 
+    {/* FLOAT BUTTONS */}
+      <a href="https://wa.me/447733927558" target="_blank" rel="noopener noreferrer" className="whatsapp-chat"><i className="fa-brands fa-whatsapp"></i></a>
+      <a href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk" className="email-float" target="_blank" rel="noreferrer"><i className="fa-solid fa-envelope"></i></a>
 
-      <a
-        href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk"
-        className="email-float"
-        target="_blank"
-      >
-        <i className="fa-solid fa-envelope"></i>
-      </a>
     </>
   );
 };

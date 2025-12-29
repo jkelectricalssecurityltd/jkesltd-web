@@ -277,6 +277,9 @@ header{
 
 
 
+
+
+
 /* --------- Single Hex Section --------- */
 .single-hex-section {
   padding: 80px 20px;
@@ -287,26 +290,33 @@ header{
   flex-wrap: wrap;
 }
 
-/* -------- Hexagon -------- */
+/* -------- Updated Shape (Polygon Removed) -------- */
 .single-hex {
   width: 350px;
-  height: 360px;
-  border: 6px solid white;
-  clip-path: polygon(25% 6%, 75% 6%, 100% 50%, 75% 94%, 25% 94%, 0% 50%);
+  height: 350px;
+  border: 6px solid #0E7B99; /* Changed to theme blue for a cleaner look */
+  
+  /* REMOVES THE POLYGON */
+  clip-path: none !important;
+  -webkit-clip-path: none !important;
+  
+  border-radius: 20px; /* Modern rounded corners */
   overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+  background: #fff;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
 }
 
 .single-hex img {
-  width:100%;
-  height:100%;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center;
 }
 
-/* ------ Text  Section ------- */
+/* ------ Text Section ------- */
 .single-hex-content {
   max-width: 600px;
 }
@@ -325,95 +335,71 @@ header{
   color: #444;
 }
 
-/* -------- Responsive  -------- */
+/* -------- ALL DEVICES RESPONSIVE -------- */
 
-@media (max-width:1100px){
+@media (max-width: 1100px) {
   .single-hex-section {
     gap: 40px;
   }
-
   .single-hex {
-    width: 260px;
+    width: 300px;
     height: 300px;
   }
-
-  .single-hex img {
-    width:100%;
-    height:100%;
-    object-fit: cover;
-  }
-
   .single-hex-content h1 {
     font-size: 34px;
   }
-
-  .single-hex-content p {
-    font-size: 16px;
-  }
 }
 
-@media (max-width: 600px) {
+@media (max-width: 900px) {
   .single-hex-section {
-    padding: 50px 15px;
+    padding: 60px 20px;
     gap: 30px;
+    /* This forces the stack layout */
+    flex-direction: column !important; 
+    text-align: center;
+  }
+
+  /* This specifically targets the Alarms section (Text-first) 
+     and flips it so the Image is on top on mobile */
+  .single-hex-section {
+    display: flex;
+    flex-direction: column-reverse; 
+  }
+
+  /* But we want CCTV and PAT to stay Image-first, 
+     so we use this specific logic: */
+  .single-hex-section:nth-of-type(odd) {
+    flex-direction: column;
+  }
+  .single-hex-section:nth-of-type(even) {
+    flex-direction: column-reverse;
   }
 
   .single-hex {
-    width: 220px;
-    height: 260px;
-    border-width: 4px;
+    width: 280px;
+    height: 280px;
+    margin: 0 auto;
   }
 
-  .single-hex img {
-    width:100%;
-    height:100%;
-    object-fit: cover;
+  .single-hex-content {
+    max-width: 100%;
   }
 
   .single-hex-content h1 {
     font-size: 28px;
-    line-height: 1.25;
-  }
-
-  .single-hex-content p {
-    font-size: 15px;
-    line-height: 1.5;
   }
 }
 
-@media (max-width: 380px) {
+@media (max-width: 480px) {
   .single-hex {
-    width: 200px;
-    height: 230px;
+    width: 100%;
+    max-width: 250px;
+    height: 250px;
   }
-
-  .single-hex img {
-    width:100%;
-    height:100%;
-  }
-
   .single-hex-content h1 {
     font-size: 24px;
   }
-
-  .single-hex-content p {
-    font-size: 14px;
-  }
 }
-
-/* ------- fade up ------- */
-
-.fade-up {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
-}
-
-.fade-up.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
 
 
 
@@ -594,7 +580,7 @@ header{
 .reviews-track {
   display: flex;
   gap: 24px;
-  animation: scrollReviews 45s linear infinite;
+  animation: scrollReviews 15s linear infinite;
   will-change: transform;
 }
 
@@ -823,4 +809,28 @@ header{
 
 .email-float i {
   font-size: 26px;
+}
+
+
+
+
+
+
+
+.success-msg {
+  display: none;
+  text-align: center;
+  font-size: 14px;
+  animation: fadeIn 0.4s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.contact-form button:disabled {
+  background-color: #555 !important;
+  opacity: 0.7;
+  cursor: not-allowed;
 }

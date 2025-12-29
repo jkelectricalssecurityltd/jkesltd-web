@@ -258,6 +258,10 @@ header{
   color: #ffffff;
 }
 
+
+
+
+
 /* -------- GET QUOTE BUTTON -------- */
 .info-btn {
   margin-top: 28px;
@@ -492,32 +496,36 @@ header{
 
 
 
-/* -------- SUCCESS MESSAGE -------- */
+/* 1. Ensure the success message can be toggled by React style prop */
 .success-msg {
-  display: none;
-  margin-bottom: 12px;
+  display: none; /* Hidden by default, React will set to 'block' */
+  margin-bottom: 15px;
   padding: 12px;
-  text-align: center;
   background: #28a745;
   color: white;
-  font-weight: 600;
+  text-align: center;
   border-radius: 6px;
-  animation: fadeScale 0.5s ease;
+  font-weight: bold;
 }
 
-@keyframes fadeScale {
-  from {
-    opacity: 0;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-/* Button loading state */
+/* 2. Visual state for the button while the email is sending */
 button.sending {
-  background: #aaa !important;
+  background: #555 !important; 
   cursor: not-allowed;
+  opacity: 0.8;
+  pointer-events: none; /* Prevents double-clicking while sending */
+}
+
+/* 3. Ensure the popup overlay works with the React conditional rendering */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex; /* React handles the mounting/unmounting */
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
 }

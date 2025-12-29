@@ -1,10 +1,34 @@
-import React, { useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import emailjs from "@emailjs/browser";
 import "../styles/contact.css";
 
-
 const Contact = () => {
+  // Use refs to access the form DOM elements directly for EmailJS
+  const contactFormRef = useRef();
+  const quoteFormRef = useRef();
+  
+  // State for popup visibility
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  
+  // State for button labels - uses the object logic we discussed
+  const [btnText, setBtnText] = useState({ 
+    contact: "Submit", 
+    quote: "Submit" 
+  });
+  
+  // State to show/hide success messages
+  const [success, setSuccess] = useState({ 
+    contact: false, 
+    quote: false 
+  });
 
+  // --- YOUR EMAILJS CREDENTIALS ---
+  const SERVICE_ID = "service_ss73srr";
+  const TEMPLATE_ID = "template_q103b69";
+  const PUBLIC_KEY = "vZi4ov88G9NAu8J0-";
+
+  // Handles mobile submenu toggling
   const handleDropdownClick = (e) => {
     if (window.innerWidth <= 900) {
       e.preventDefault();
@@ -14,102 +38,45 @@ const Contact = () => {
       }
     }
   };
-  useEffect(() => {
 
-    // CONTACT FORM
-    const contactForm = document.getElementById("contactForm");
-    if (contactForm) {
-      contactForm.addEventListener("submit", function (e) {
-        e.preventDefault();
+  // The main function to send emails via EmailJS
+  const sendEmail = (e, formRef, type) => {
+    e.preventDefault();
+    
+    // 1. Set specific button to loading state
+    setBtnText((prev) => ({ ...prev, [type]: "Sending..." }));
 
-        const btn = this.querySelector("button");
-        const success = this.querySelector(".success-msg");
+    // 2. Send the form data to EmailJS
+    emailjs.sendForm(SERVICE_ID, TEMPLATE_ID, formRef.current, PUBLIC_KEY)
+      .then(() => {
+        // 3. Update UI on success
+        setBtnText((prev) => ({ ...prev, [type]: "Sent ✓" }));
+        setSuccess((prev) => ({ ...prev, [type]: true }));
+        
+        // 4. Reset the actual HTML form
+        formRef.current.reset();
 
-        btn.classList.add("sending");
-        btn.innerText = "Preparing…";
-
-        const gmailURL =
-          `https://mail.google.com/mail/?view=cm&fs=1` +
-          `&to=contact@jkelectricalssecurityltd.co.uk` +
-          `&su=Service Enquiry` +
-          `&body=` +
-          encodeURIComponent(
-            `Name: ${name.value}\nEmail: ${email.value}\nAddress: ${Address.value}\nPhone: ${phone.value}\n\nMessage:\n${message.value}`
-          );
-
-        window.open(gmailURL, "_blank", "noopener,noreferrer");
-
+        // 5. Clean up UI after 3 seconds
         setTimeout(() => {
-          btn.classList.remove("sending");
-          btn.innerText = "Sent ✓";
-          success.style.display = "block";
-          contactForm.reset();
-
-          setTimeout(() => {
-            success.style.display = "none";
-            btn.innerText = "Submit";
-          }, 3000);
-        }, 600);
+          setSuccess((prev) => ({ ...prev, [type]: false }));
+          setBtnText((prev) => ({ ...prev, [type]: "Submit" }));
+          if (type === "quote") setIsPopupOpen(false);
+        }, 3000);
+      }, (error) => {
+        // Handle errors (e.g., network issues)
+        console.error("FAILED...", error.text);
+        alert("Failed to send. Please check your connection.");
+        setBtnText((prev) => ({ ...prev, [type]: "Submit" }));
       });
-    }
-
-    // POPUP OPEN / CLOSE
-    const openPopup = document.getElementById("openPopup");
-    const closePopup = document.getElementById("closePopup");
-    const popupOverlay = document.getElementById("popupOverlay");
-
-    openPopup?.addEventListener("click", () => popupOverlay.style.display = "flex");
-    closePopup?.addEventListener("click", () => popupOverlay.style.display = "none");
-    window.addEventListener("click", e => {
-      if (e.target === popupOverlay) popupOverlay.style.display = "none";
-    });
-
-    // CALL FORM
-    const callForm = document.getElementById("callForm");
-    if (callForm) {
-      callForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-
-        const btn = this.querySelector("button");
-        const success = this.querySelector(".success-msg");
-
-        btn.classList.add("sending");
-        btn.innerText = "Preparing…";
-
-        const gmailURL =
-          `https://mail.google.com/mail/?view=cm&fs=1` +
-          `&to=contact@jkelectricalssecurityltd.co.uk` +
-          `&su=Call Back Request` +
-          `&body=` +
-          encodeURIComponent(
-            `Name: ${popupName.value}\nPhone: ${popupPhone.value}\nPreferred Time: ${popupTime.value}`
-          );
-
-        window.open(gmailURL, "_blank", "noopener,noreferrer");
-
-        setTimeout(() => {
-          btn.classList.remove("sending");
-          btn.innerText = "Sent ✓";
-          success.style.display = "block";
-          callForm.reset();
-
-          setTimeout(() => {
-            popupOverlay.style.display = "none";
-            success.style.display = "none";
-            btn.innerText = "Submit";
-          }, 3000);
-        }, 600);
-      });
-    }
-  }, []);
+  };
 
   return (
     <>
-      {/* HEADER */}
+      {/* HEADER SECTION */}
       <header>
         <div className="logo">
-            <img src="/images/JKLOGO.png" alt="Logo" />
-            </div>
+          <img src="/images/JKLOGO.png" alt="Logo" />
+        </div>
         <input type="checkbox" id="menu-toggle" />
         <label htmlFor="menu-toggle" className="hamburger">&#9776;</label>
         <nav>
@@ -117,19 +84,19 @@ const Contact = () => {
             <li><a href="/">Home</a></li>
             <li><a href="/aboutus">About Us</a></li>
             <li className="dropdown">
-             <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>CCTV</a>
-              <ul className="submenu">
-                <li><a href="/cctv">IP</a></li>
-                <li><a href="/cctv">Analogue</a></li>
-                <li><a href="/cctv">Wireless</a></li>
-              </ul>
-            </li>
+            <Link to="/cctv" className="dropdown-btn">CCTV</Link>
+             <ul className="submenu">
+             <li><Link to="/cctv">IP (Internet Protocol)</Link></li>
+             <li><Link to="/cctv">Analogue</Link></li>
+             <li><Link to="/cctv">Wireless</Link></li>
+             </ul>
+             </li>
             <li className="dropdown">
-             <a href="#" className="dropdown-btn" onClick={handleDropdownClick}>Alarms</a>
-              <ul className="submenu">
-                <li><a href="/alarms">Conventional</a></li>
-                <li><a href="/alarms">Addressable</a></li>
-              </ul>
+            <Link to="/alarms" className="dropdown-btn">Alarms</Link> 
+             <ul className="submenu">
+             <li><Link to="/alarms">Conventional</Link></li>
+             <li><Link to="/alarms">Addressable</Link></li>
+             </ul>
             </li>
             <li><a href="/pattesting">PAT Testing</a></li>
             <li><a href="/contact">Contact Us</a></li>
@@ -137,7 +104,7 @@ const Contact = () => {
         </nav>
       </header>
 
-      {/* CONTACT SECTION */}
+      {/* CONTACT HERO SECTION */}
       <section className="contact-section">
         <div className="contact-container">
           <div className="contact-info">
@@ -148,109 +115,94 @@ const Contact = () => {
             <div className="info-box"><i className="fa fa-map-marker" /> Croydon</div>
           </div>
 
-          <form className="contact-form" id="contactForm">
+          {/* MAIN CONTACT FORM */}
+          <form className="contact-form" ref={contactFormRef} onSubmit={(e) => sendEmail(e, contactFormRef, "contact")}>
             <h3>Send Us a Message</h3>
-            <input id="name" placeholder="Full Name" required />
-            <input id="email" type="email" placeholder="Email" required />
-            <input id="Address" placeholder="Address" required />
-            <input id="phone" placeholder="Phone" required />
-            <textarea id="message" rows="5" placeholder="Your Message" required />
-            <div className="success-msg">✓ Message ready to send</div>
-            <button type="submit">Submit</button>
+            {/* The 'name' attributes below match your EmailJS template variables */}
+            <input name="name" placeholder="Full Name" required />
+            <input name="email" type="email" placeholder="Email" required />
+            <input name="address" placeholder="Address" required />
+            <input name="phone" placeholder="Phone" required />
+            <textarea name="message" rows="5" placeholder="Your Message" required />
+            
+            {/* Success message displays only when success.contact is true */}
+            <div className="success-msg" style={{ display: success.contact ? "block" : "none" }}>
+              ✓ Message Sent Successfully
+            </div>
+            
+            <button type="submit" className={btnText.contact !== "Submit" ? "sending" : ""}>
+              {btnText.contact}
+            </button>
           </form>
         </div>
 
-        <button className="info-btn" id="openPopup">Get A Quote</button>
+        {/* TRIGGER FOR POPUP */}
+        <button className="info-btn" onClick={() => setIsPopupOpen(true)}>Get A Quote</button>
       </section>
 
-      {/* POPUP */}
-      <div className="popup-overlay" id="popupOverlay">
-        <div className="popup-form">
-          <span className="close-btn" id="closePopup">×</span>
-          <h2>Book a Call</h2>
-          <form id="callForm">
-            <input id="popupName" placeholder="Full Name" required />
-            <input id="popupPhone" placeholder="Mobile" required />
-            <input id="popupTime" type="time" required />
-            <div className="success-msg">✓ Message ready to send</div>
-            <button className="submit-btn">Submit</button>
-          </form>
+      {/* POPUP OVERLAY & FORM */}
+      {isPopupOpen && (
+        <div className="popup-overlay" style={{ display: "flex" }} onClick={() => setIsPopupOpen(false)}>
+          <div className="popup-form" onClick={(e) => e.stopPropagation()}>
+            <span className="close-btn" onClick={() => setIsPopupOpen(false)}>×</span>
+            <h2>Book a Call</h2>
+            <form ref={quoteFormRef} onSubmit={(e) => sendEmail(e, quoteFormRef, "quote")}>
+              <input name="name" placeholder="Full Name" required />
+              <input name="phone" placeholder="Mobile Number" required />
+              <input name="quote_time" type="time" required />              
+              <div className="success-msg" style={{ display: success.quote ? "block" : "none" }}>
+                ✓ Quote Request Sent
+              </div>
+              
+              <button type="submit" className={`submit-btn ${btnText.quote !== "Submit" ? "sending" : ""}`}>
+                {btnText.quote}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
+      )}
 
+      {/* FOOTER */}
+      <footer className="jk-footer">
+        <div className="jk-footer-container">
+          <div className="jk-footer-about">
+            <h2>J&K Electricals Security LTD</h2>
+            <p>Providing trusted Electrical, Security & Fire Safety solutions with quality service and professional installation.</p>
+          </div>
+          <div className="jk-footer-links">
+            <h3>Quick Links</h3>
+            <ul>
+              <li><a href="/">Home</a></li>
+              <li><a href="/cctv">CCTV Installation</a></li>
+              <li><a href="/alarms">Alarms</a></li>
+              <li><a href="/contact">Contact Us</a></li>
+            </ul>
+          </div>
+          <div className="jk-footer-contact">
+            <h3>Contact Info</h3>
+            <p><i className="fa fa-phone"></i> +44 7733927558</p>
+            <p><i className="fa fa-envelope"></i> contact@jkelectricalssecurityltd.co.uk</p>
+            <div className="jk-social-icons">
+              <a href="#"><i className="fa-brands fa-facebook"></i></a>
+              <a href="https://www.instagram.com/jkelectricalssecurityltd" target="_blank" rel="noopener noreferrer">
+                <i className="fa-brands fa-instagram"></i>
+              </a>
+              <a href="#"><i className="fa-brands fa-linkedin"></i></a>
+            </div>
+          </div>
+        </div>
+        <div className="jk-footer-bottom">
+          <p>© 2025 J&K Electricals Security LTD — All Rights Reserved.</p>
+        </div>
+      </footer>
 
-      
-     {/* Footer */}
-<footer className="jk-footer">
-  <div className="jk-footer-container">
-
-    {/* ABOUT */}
-    <div className="jk-footer-about">
-      <h2>J&K Electricals Security LTD</h2>
-      <p>
-        Providing trusted Electrical, Security & Fire Safety solutions with
-        quality service and professional installation.
-      </p>
-    </div>
-
-    {/* QUICK LINKS */}
-    <div className="jk-footer-links">
-      <h3>Quick Links</h3>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/cctv">CCTV Installation</a></li>
-        <li><a href="/alarms">Alarms</a></li>
-        <li><a href="/pattesting">PAT Testing</a></li>
-        <li><a href="/contact">Contact Us</a></li>
-      </ul>
-    </div>
-
-    {/* CONTACT INFO */}
-    <div className="jk-footer-contact">
-      <h3>Contact Info</h3>
-      <p><i className="fa fa-phone"></i> +44 7733927558, +44 7359920729</p>
-      <p><i className="fa fa-envelope"></i> contact@jkelectricalssecurityltd.co.uk</p>
-      <p><i className="fa fa-map-marker"></i> Croydon</p>
-
-      <div className="jk-social-icons">
-        <a href="#"><i className="fa-brands fa-facebook"></i></a>
-        <a
-          href="https://www.instagram.com/jkelectricalssecurityltd?igsh=emtnZnk0a3YxbzEw"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <i className="fa-brands fa-instagram"></i>
-        </a>
-        <a href="#"><i className="fa-brands fa-linkedin"></i></a>
-      </div>
-    </div>
-
-  </div>
-
-  {/* BOTTOM */}
-  <div className="jk-footer-bottom">
-    <p>© 2025 J&K Electricals Security LTD — All Rights Reserved.</p>
-  </div>
-</footer>
-
-     {/*Float Icons */}
-     <a
-  href="https://wa.me/447733927558"
-  target="_blank"
-  rel="noopener noreferrer"
-  className="whatsapp-chat"
->
-  <i className="fa-brands fa-whatsapp"></i>
-</a>
-
-      <a
-        href="https://mail.google.com/mail/?view=cm&fs=1&to=contact@jkelectricalssecurityltd.co.uk"
-        className="email-float"
-        target="_blank"
-      >
+      {/* FLOATING ACTION BUTTONS */}
+      <a href="https://wa.me/447733927558" target="_blank" rel="noopener noreferrer" className="whatsapp-chat">
+        <i className="fa-brands fa-whatsapp"></i>
+      </a>
+      <a href="mailto:contact@jkelectricalssecurityltd.co.uk" className="email-float">
         <i className="fa-solid fa-envelope"></i>
       </a>
-
     </>
   );
 };
