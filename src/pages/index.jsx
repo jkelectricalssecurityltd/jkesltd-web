@@ -1,6 +1,5 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { Helmet } from "react-helmet-async";
 import emailjs from "@emailjs/browser";
 import "../styles/style.css";
 
@@ -78,10 +77,6 @@ const Home = () => {
 
   return (
     <> 
-      <Helmet>
-      <title>CCTV & Fire Alarm Installation in Croydon | J&K Electricals Security Ltd</title>
-      <meta name="description" content="Professional CCTV installation and fire alarm services in Croydon, London. Reliable, affordable and 24/7 support." />
-      </Helmet>
       {/*Header */}
       <header>
         <div className="logo"><img src={logo} alt="Logo" /></div>
