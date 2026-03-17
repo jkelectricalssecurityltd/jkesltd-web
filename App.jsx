@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";   
 import { HelmetProvider } from "react-helmet-async";
 
-import Home from "./pages";           // index.jsx
+import Home from "./pages/index";           // index.jsx
 import About from "./pages/About";
 import CCTV from "./pages/CCTV";
 import Alarms from "./pages/Alarms";
