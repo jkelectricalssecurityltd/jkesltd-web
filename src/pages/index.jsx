@@ -22,21 +22,21 @@ const Home = () => {
       }
     }
   };
-
-  useEffect(() => {
-    const animatedItems = document.querySelectorAll(".fade-up");
-    const revealOnScroll = () => {
-      const windowHeight = window.innerHeight;
-      animatedItems.forEach((item, index) => {
-        if (item.getBoundingClientRect().top < windowHeight - 80) {
-          setTimeout(() => item.classList.add("show"), index * 200);
-        }
-      });
-    };
-    window.addEventListener("scroll", revealOnScroll);
-    revealOnScroll();
-    return () => window.removeEventListener("scroll", revealOnScroll);
-  }, []);
+  
+  //useEffect(() => {
+    //const animatedItems = document.querySelectorAll(".fade-up");
+   // const revealOnScroll = () => {
+    //  const windowHeight = window.innerHeight;
+     // animatedItems.forEach((item, index) => {
+     //   if (item.getBoundingClientRect().top < windowHeight - 80) {
+       //   setTimeout(() => item.classList.add("show"), index * 200);
+      //  }
+     // });
+    //};
+    //window.addEventListener("scroll", revealOnScroll);
+   // revealOnScroll();
+   // return () => window.removeEventListener("scroll", revealOnScroll);
+ // }, []); 
 
   const sendEmail = (e) => {
     e.preventDefault();
