@@ -118,12 +118,6 @@ const Home = () => {
         </div>
       </div>
 
-      <p className="seo-text">
-         We provide CCTV installation, fire alarm installation and security systems in Croydon and London.
-     </p>
-
-
-
 
       {/* HEX SECTIONS */}
       <section className="single-hex-section fade-up">
