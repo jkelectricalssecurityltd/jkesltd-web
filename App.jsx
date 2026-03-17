@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";   
 import { HelmetProvider } from "react-helmet-async";
 
 import Home from "./pages";           // index.jsx
