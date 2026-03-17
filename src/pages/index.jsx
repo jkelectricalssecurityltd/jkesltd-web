@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import emailjs from "@emailjs/browser";
 import "../styles/style.css";
 
@@ -76,7 +77,11 @@ const Home = () => {
 
 
   return (
-    <>
+    <> 
+      <Helmet>
+      <title>CCTV & Fire Alarm Installation in Croydon | J&K Electricals Security Ltd</title>
+      <meta name="description" content="Professional CCTV installation and fire alarm services in Croydon, London. Reliable, affordable and 24/7 support." />
+      </Helmet>
       {/*Header */}
       <header>
         <div className="logo"><img src={logo} alt="Logo" /></div>
@@ -113,10 +118,14 @@ const Home = () => {
         <div className="overlay"></div>
         <div className="content">
           <div className="small-title"><span className="line"></span><span>J&K Electricals Security LTD</span><span className="line"></span></div>
-          <h1 className="main-title">CCTV & FIRE ALARMS <br /> INSTALLATION <br /> PAT TESTING</h1>
-          <p className="sub-text">LOCATION: CROYDON</p>
+          <h1 className="main-title">CCTV & Fire Alarm Installation in Croydon, London</h1>
+          <p className="sub-text">Professional Security Systems for Homes & Businesses</p>
         </div>
       </div>
+
+      <p className="seo-text">
+         We provide CCTV installation, fire alarm installation and security systems in Croydon and London.
+     </p>
 
 
 
@@ -125,7 +134,7 @@ const Home = () => {
       <section className="single-hex-section fade-up">
         <div className="single-hex"><img src={cctvInstall} /></div>
         <div className="single-hex-content">
-          <h1>CCTV INSTALLATIONS<br />YOU CAN RELY ON</h1>
+          <h2>CCTV INSTALLATIONS<br />YOU CAN RELY ON</h2>
           <p>Our CCTV installation services provide advanced security solutions for homes, 
       businesses, and industrial spaces. We offer expert camera placement, high-definition video clarity, 
       and remote monitoring through mobile and web access. With certified technicians and customized system design,
@@ -136,7 +145,7 @@ const Home = () => {
 
       <section className="single-hex-section fade-up">
         <div className="single-hex-content">
-          <h1>FIRE ALARM INSTALLATIONS<br />YOU CAN RELY ON</h1>
+          <h2>FIRE ALARM INSTALLATIONS<br />YOU CAN RELY ON</h2>
           <p>Our fire alarm installation services provide reliable protection and early warning 
       solutions for residential, commercial, and industrial properties. We design and install 
       intelligent fire detection systems that respond instantly to smoke, heat, and fire emergencies. 
@@ -150,7 +159,7 @@ const Home = () => {
       <section className="single-hex-section fade-up">
         <div className="single-hex"><img src={patTesting} /></div>
         <div className="single-hex-content">
-          <h1>PAT TESTING<br />YOU CAN RELY ON</h1>
+          <h2>PAT TESTING<br />YOU CAN RELY ON</h2>
           <p>Our PAT testing (Portable Appliance Testing) services ensure electrical equipment is safe, 
       compliant, and functioning correctly in workplaces and commercial environments. 
       We perform detailed inspections and electrical testing on all portable appliances to 
@@ -229,7 +238,7 @@ const Home = () => {
         <div className="contact-container">
           <div className="contact-info fade-up">
             <h2>Contact Us</h2>
-            <div className="info-box"><i className="fa-solid fa-phone"></i><span>+44 7733927558</span></div>
+            <div className="info-box"><i className="fa-solid fa-phone"></i><span><a href="tel:+447733927558">+44 7733927558</a></span></div>
             <div className="info-box"><i className="fa-solid fa-envelope"></i><span>contact@jkelectricalssecurityltd.co.uk</span></div>
             <div className="info-box"><i className="fa-solid fa-location-dot"></i><span>Croydon</span></div>
           </div>
@@ -280,7 +289,7 @@ const Home = () => {
     {/* CONTACT INFO */}
     <div className="jk-footer-contact">
       <h3>Contact Info</h3>
-      <p><i className="fa fa-phone"></i> +44 7733927558, +44 7359920729</p>
+      <p><i className="fa fa-phone"></i> <a href="tel:+447733927558"> +44 7733927558, +44 7359920729</a></p>
       <p><i className="fa fa-envelope"></i> contact@jkelectricalssecurityltd.co.uk</p>
       <p><i className="fa fa-map-marker"></i> Croydon</p>
 
